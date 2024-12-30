@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Photo Finder",
+  "version": "1.0",
+  "description": "Find and list all photos on the active Facebook tab.",
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "host_permissions": ["*://*.facebook.com/*"]
+}
