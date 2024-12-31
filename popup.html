@@ -1,13 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Facebook Photo Finder</title>
-   <link rel="stylesheet" href="popup.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cover Photo Viewer</title>
+  <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <h3>Facebook Photo Finder</h3>
-  <button id="findPhotos">Find Photos</button>
-  <ul id="photoList"></ul>
+  <div id="app">
+    <h3>Cover Photo Viewer</h3>
+    <div id="photo-container">
+      <p id="no-photo-message">No cover photo found.</p>
+      <img id="cover-photo" src="" alt="Cover Photo" style="display: none; cursor: pointer;" />
+    </div>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

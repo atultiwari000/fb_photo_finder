@@ -1,42 +1,41 @@
-document.getElementById("findPhotos").addEventListener("click", async () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-
-  if (!tab.url.includes("facebook.com")) {
-    alert("This extension only works on Facebook pages.");
-    return;
-  }
-
   chrome.scripting.executeScript(
     {
       target: { tabId: tab.id },
-      files: ["content.js"],
-    },
-    (results) => {
-      const photos = results[0].result;
-      const photoList = document.getElementById("photoList");
-      photoList.innerHTML = "";
+      func: () => {
+        const images = document.querySelectorAll('img');
 
-      if (photos.length === 0) {
-        photoList.textContent = "No relevant photos found.";
-        return;
-      }
-
-      photos.forEach((photo) => {
-        const li = document.createElement("li");
-        const img = document.createElement("img");
-        img.src = photo.src;
-        img.style.width = "60px";
-        img.style.cursor = "pointer";
-        img.alt = `Image: ${photo.width}x${photo.height}`;
-        img.title = `Image: ${photo.width}x${photo.height}`;
-
-        img.addEventListener("click", () => {
-          window.open(photo.src, "_blank");
+        const coverPhoto = Array.from(images).find(img => {
+          const isFacebookImage = img.src.includes('scontent') && img.src.includes('fna.fbcdn.net');
+          const isHighResolution = img.naturalWidth > 500; // yo chai change garna parla
+          return isFacebookImage && isHighResolution;
         });
+        if (coverPhoto) {
+          return coverPhoto.src; 
+        } else {
+          return null; 
+        }
+      },
+    },
+    ([result]) => {
+      const coverPhotoUrl = result.result;
 
-        li.appendChild(img);
-        photoList.appendChild(li);
-      });
+      const coverPhotoElement = document.getElementById('cover-photo');
+      const noPhotoMessage = document.getElementById('no-photo-message');
+
+      if (coverPhotoUrl) {
+        coverPhotoElement.src = coverPhotoUrl;
+        coverPhotoElement.style.display = 'block';
+        noPhotoMessage.style.display = 'none';
+
+        coverPhotoElement.addEventListener('click', () => {
+          chrome.tabs.create({ url: coverPhotoUrl });
+        });
+      } else {
+        noPhotoMessage.style.display = 'block';
+        coverPhotoElement.style.display = 'none';
+      }
     }
   );
 });
